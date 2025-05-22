@@ -94,9 +94,18 @@ export default function HomePage() {
   };
 
   const handleFilterChange = (type: 'genre' | 'language' | 'status', value: string) => {
-    setFilters(prev => ({ ...prev, [type]: value }));
-    setCurrentPage(1);
-    updateUrlParams({ [type]: value });
+    // If the value is "all", remove the filter
+    if (value === "all") {
+      const newFilters = { ...filters };
+      delete newFilters[type];
+      setFilters(newFilters);
+      setCurrentPage(1);
+      updateUrlParams({ [type]: "" });
+    } else {
+      setFilters(prev => ({ ...prev, [type]: value }));
+      setCurrentPage(1);
+      updateUrlParams({ [type]: value });
+    }
   };
 
   const handlePageChange = (page: number) => {

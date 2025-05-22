@@ -64,7 +64,7 @@ export default function SearchBar({ onSearch, onFilterChange, currentFilters }: 
               <SelectValue placeholder="Genre" />
             </SelectTrigger>
             <SelectContent>
-              <SelectItem value="">All Genres</SelectItem>
+              <SelectItem value="all">All Genres</SelectItem>
               {genres.map((genre) => (
                 <SelectItem key={genre} value={genre}>{genre}</SelectItem>
               ))}
@@ -79,7 +79,7 @@ export default function SearchBar({ onSearch, onFilterChange, currentFilters }: 
               <SelectValue placeholder="Language" />
             </SelectTrigger>
             <SelectContent>
-              <SelectItem value="">All Languages</SelectItem>
+              <SelectItem value="all">All Languages</SelectItem>
               <SelectItem value="sub">Subbed</SelectItem>
               <SelectItem value="dub">Dubbed</SelectItem>
               <SelectItem value="both">Both</SelectItem>
@@ -94,7 +94,7 @@ export default function SearchBar({ onSearch, onFilterChange, currentFilters }: 
               <SelectValue placeholder="Status" />
             </SelectTrigger>
             <SelectContent>
-              <SelectItem value="">All Status</SelectItem>
+              <SelectItem value="all">All Status</SelectItem>
               <SelectItem value="ongoing">Ongoing</SelectItem>
               <SelectItem value="completed">Completed</SelectItem>
             </SelectContent>

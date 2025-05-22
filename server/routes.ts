@@ -103,11 +103,18 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
 
     if (genre || language || status) {
-      const results = await storage.filterAnime({
-        genre,
-        language,
-        status,
-      });
+      // Filter out "all" values which should be treated as no filter
+      const filterOptions: {
+        genre?: string;
+        language?: string;
+        status?: string;
+      } = {};
+      
+      if (genre && genre !== "all") filterOptions.genre = genre;
+      if (language && language !== "all") filterOptions.language = language;
+      if (status && status !== "all") filterOptions.status = status;
+      
+      const results = await storage.filterAnime(filterOptions);
       return res.json(results);
     }
 
