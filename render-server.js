@@ -81,6 +81,23 @@ const htmlContent = `
       background-color: var(--primary-dark);
       padding: 1rem 2rem;
       box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+    nav ul {
+      display: flex;
+      list-style: none;
+      gap: 1.5rem;
+    }
+    nav a {
+      color: white;
+      text-decoration: none;
+      font-weight: 600;
+      transition: opacity 0.2s;
+    }
+    nav a:hover {
+      opacity: 0.8;
     }
     .container {
       max-width: 1200px;
@@ -121,6 +138,7 @@ const htmlContent = `
       box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
       border: 1px solid var(--border);
       transition: transform 0.3s ease;
+      cursor: pointer;
     }
     .feature-card:hover {
       transform: translateY(-5px);
@@ -143,6 +161,7 @@ const htmlContent = `
       box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
       border: 1px solid var(--border);
       transition: transform 0.3s ease, box-shadow 0.3s ease;
+      cursor: pointer;
     }
     .anime-card:hover {
       transform: translateY(-8px);
@@ -182,6 +201,7 @@ const htmlContent = `
       font-weight: 600;
       margin-top: 2rem;
       transition: background-color 0.2s;
+      cursor: pointer;
     }
     .btn:hover {
       background-color: var(--primary-dark);
@@ -193,6 +213,58 @@ const htmlContent = `
       margin-top: 4rem;
       border-top: 1px solid var(--border);
     }
+    .modal {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background-color: rgba(0, 0, 0, 0.7);
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      z-index: 100;
+      opacity: 0;
+      pointer-events: none;
+      transition: opacity 0.3s ease;
+    }
+    .modal.active {
+      opacity: 1;
+      pointer-events: all;
+    }
+    .modal-content {
+      background-color: var(--card-bg);
+      border-radius: 8px;
+      padding: 2rem;
+      max-width: 500px;
+      width: 90%;
+      box-shadow: 0 10px 25px rgba(0, 0, 0, 0.5);
+    }
+    .modal-close {
+      float: right;
+      font-size: 1.5rem;
+      background: none;
+      border: none;
+      color: var(--foreground);
+      cursor: pointer;
+    }
+    .toast {
+      position: fixed;
+      bottom: 20px;
+      right: 20px;
+      background-color: var(--primary);
+      color: white;
+      padding: 1rem 1.5rem;
+      border-radius: 8px;
+      box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
+      transform: translateY(100px);
+      opacity: 0;
+      transition: transform 0.3s ease, opacity 0.3s ease;
+    }
+    .toast.active {
+      transform: translateY(0);
+      opacity: 1;
+    }
     @media (max-width: 768px) {
       .container {
         padding: 1rem;
@@ -200,33 +272,47 @@ const htmlContent = `
       .features, .anime-grid {
         grid-template-columns: 1fr;
       }
+      nav {
+        display: none;
+      }
     }
   </style>
 </head>
 <body>
   <header>
     <h1>Animes2u Community</h1>
+    <nav>
+      <ul>
+        <li><a href="#" class="nav-link" data-action="home">Home</a></li>
+        <li><a href="#" class="nav-link" data-action="browse">Browse</a></li>
+        <li><a href="#" class="nav-link" data-action="telegram">Telegram</a></li>
+        <li><a href="#adminLoginSection" class="nav-link">Admin</a></li>
+      </ul>
+    </nav>
   </header>
   
   <div class="container">
     <div class="hero">
       <h2>Your Ultimate Anime Community Hub</h2>
       <p>Discover new anime, connect with fellow fans, and explore your favorite shows - all in one place.</p>
-      <a href="https://github.com/sammmmmm099/web2u" class="btn">View on GitHub</a>
+      <div>
+        <a href="https://github.com/sammmmmm099/web2u" target="_blank" class="btn" style="margin-right: 15px;">View on GitHub</a>
+        <a href="#adminLoginSection" class="btn admin-link" style="background-color: #1e1e1e; border: 1px solid var(--primary);">Admin Login</a>
+      </div>
     </div>
     
     <div class="features">
-      <div class="feature-card">
+      <div class="feature-card" data-action="discover">
         <div class="feature-icon">🔍</div>
         <h3>Discover Anime</h3>
         <p>Browse through our curated collection of anime shows and find hidden gems.</p>
       </div>
-      <div class="feature-card">
+      <div class="feature-card" data-action="telegram">
         <div class="feature-icon">📱</div>
         <h3>Connect via Telegram</h3>
         <p>Join our Telegram channels to download and discuss your favorite anime.</p>
       </div>
-      <div class="feature-card">
+      <div class="feature-card" data-action="trending">
         <div class="feature-icon">⭐</div>
         <h3>Trending Shows</h3>
         <p>Stay up-to-date with what's popular in the anime community right now.</p>
@@ -235,7 +321,7 @@ const htmlContent = `
     
     <h2>Featured Anime</h2>
     <div class="anime-grid">
-      <div class="anime-card">
+      <div class="anime-card" data-anime="demon-slayer">
         <img src="https://images.unsplash.com/photo-1578632767115-351597cf2477?ixlib=rb-4.0.3&auto=format&fit=crop&w=500" alt="Demon Slayer" class="anime-img">
         <div class="anime-info">
           <h3 class="anime-title">Demon Slayer</h3>
@@ -247,7 +333,7 @@ const htmlContent = `
         </div>
       </div>
       
-      <div class="anime-card">
+      <div class="anime-card" data-anime="my-hero-academia">
         <img src="https://images.unsplash.com/photo-1560972550-aba3456b5564?ixlib=rb-4.0.3&auto=format&fit=crop&w=500" alt="My Hero Academia" class="anime-img">
         <div class="anime-info">
           <h3 class="anime-title">My Hero Academia</h3>
@@ -259,7 +345,7 @@ const htmlContent = `
         </div>
       </div>
       
-      <div class="anime-card">
+      <div class="anime-card" data-anime="attack-on-titan">
         <img src="https://images.unsplash.com/photo-1541562232579-512a21360020?ixlib=rb-4.0.3&auto=format&fit=crop&w=500" alt="Attack on Titan" class="anime-img">
         <div class="anime-info">
           <h3 class="anime-title">Attack on Titan</h3>
@@ -271,7 +357,7 @@ const htmlContent = `
         </div>
       </div>
       
-      <div class="anime-card">
+      <div class="anime-card" data-anime="one-piece">
         <img src="https://images.unsplash.com/photo-1607604276583-eef5d076aa5f?ixlib=rb-4.0.3&auto=format&fit=crop&w=500" alt="One Piece" class="anime-img">
         <div class="anime-info">
           <h3 class="anime-title">One Piece</h3>
@@ -288,13 +374,110 @@ const htmlContent = `
       <h2>Ready to explore?</h2>
       <p>This is a static preview of the Animes2u Community Website.</p>
       <p>For the full interactive experience, check out our GitHub repository.</p>
-      <a href="https://github.com/sammmmmm099/web2u" class="btn">Get Started</a>
+      <button class="btn" id="exploreBtn">Get Started</button>
+    </div>
+    
+    <!-- Admin Login Section -->
+    <div id="adminLoginSection" style="max-width: 400px; margin: 4rem auto; padding: 2rem; background-color: var(--card-bg); border-radius: 8px; border: 1px solid var(--border);">
+      <h3 style="margin-bottom: 1.5rem; text-align: center;">Admin Login</h3>
+      <form id="adminLoginForm" style="display: flex; flex-direction: column; gap: 1rem;">
+        <div>
+          <label for="username" style="display: block; margin-bottom: 0.5rem;">Username</label>
+          <input type="text" id="username" name="username" style="width: 100%; padding: 0.75rem; background-color: #2d2d2d; border: 1px solid var(--border); border-radius: 4px; color: var(--foreground);">
+        </div>
+        <div>
+          <label for="password" style="display: block; margin-bottom: 0.5rem;">Password</label>
+          <input type="password" id="password" name="password" style="width: 100%; padding: 0.75rem; background-color: #2d2d2d; border: 1px solid var(--border); border-radius: 4px; color: var(--foreground);">
+        </div>
+        <button type="submit" style="background-color: var(--primary); color: white; padding: 0.75rem; border: none; border-radius: 4px; font-weight: 600; cursor: pointer; margin-top: 1rem;">Login</button>
+      </form>
+      <p id="loginMessage" style="margin-top: 1rem; text-align: center; color: #f87171; display: none;">Invalid credentials. Please try again.</p>
     </div>
   </div>
+  
+  <div class="modal" id="notAvailableModal">
+    <div class="modal-content">
+      <button class="modal-close">&times;</button>
+      <h3 style="margin-bottom: 1rem;">Feature Preview</h3>
+      <p>This feature is only available in the full version of Animes2u Community.</p>
+      <p style="margin-top: 1rem;">The complete website includes:</p>
+      <ul style="margin-left: 1.5rem; margin-top: 0.5rem;">
+        <li>Full anime database</li>
+        <li>Search and filtering</li>
+        <li>Admin dashboard</li>
+        <li>Telegram channel integration</li>
+      </ul>
+      <p style="margin-top: 1rem;">Check out our GitHub repository to access the full app!</p>
+      <a href="https://github.com/sammmmmm099/web2u" target="_blank" class="btn" style="display: block; text-align: center;">View Source Code</a>
+    </div>
+  </div>
+
+  <div class="toast" id="demoToast">This is a demo version with limited functionality.</div>
   
   <footer>
     <p>© 2025 Animes2u Community. All rights reserved.</p>
   </footer>
+
+  <script>
+    // Show toast on load
+    window.addEventListener('DOMContentLoaded', () => {
+      setTimeout(() => {
+        document.getElementById('demoToast').classList.add('active');
+        setTimeout(() => {
+          document.getElementById('demoToast').classList.remove('active');
+        }, 5000);
+      }, 2000);
+    });
+
+    // Modal functionality
+    const modal = document.getElementById('notAvailableModal');
+    const closeModal = document.querySelector('.modal-close');
+    
+    function showModal() {
+      modal.classList.add('active');
+    }
+    
+    closeModal.addEventListener('click', () => {
+      modal.classList.remove('active');
+    });
+    
+    // Close modal when clicking outside
+    window.addEventListener('click', (e) => {
+      if (e.target === modal) {
+        modal.classList.remove('active');
+      }
+    });
+    
+    // Admin login form
+    document.getElementById('adminLoginForm').addEventListener('submit', function(e) {
+      e.preventDefault();
+      const username = document.getElementById('username').value;
+      const password = document.getElementById('password').value;
+      
+      // For the demo, show message about limited functionality
+      document.getElementById('loginMessage').style.display = 'block';
+      document.getElementById('loginMessage').innerText = 'Admin login functionality is only available in the full version.';
+      document.getElementById('loginMessage').style.color = '#fde68a';
+    });
+    
+    // Make all anime cards and feature cards show the modal
+    document.querySelectorAll('.anime-card, .feature-card, .nav-link, #exploreBtn').forEach(element => {
+      element.addEventListener('click', (e) => {
+        // Don't show modal for admin links that should scroll to login
+        if (e.currentTarget.classList.contains('nav-link') && 
+            e.currentTarget.getAttribute('href') === '#adminLoginSection') {
+          return;
+        }
+        
+        // Prevent default only for links
+        if (e.currentTarget.tagName === 'A') {
+          e.preventDefault();
+        }
+        
+        showModal();
+      });
+    });
+  </script>
 </body>
 </html>
 `;
